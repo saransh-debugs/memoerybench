@@ -1,5 +1,6 @@
 import type { BenchmarkRegistry, BenchmarkType } from "./benchmarks";
 import { ragBenchmarkData } from "./benchmarks";
+import type { LoCoMoBenchmarkItem } from "./benchmarks/LoCoMo/types";
 import { AQRAGProvider, ContextualRetrievalProvider, type TemplateType } from "./providers";
 
 // Provider registry
@@ -8,12 +9,21 @@ const PROVIDERS: Record<string, TemplateType> = {
 	AQRAG: AQRAGProvider,
 };
 
+// Load LoCoMo data dynamically
+async function loadLoCoMoData(): Promise<LoCoMoBenchmarkItem[]> {
+	const dataPath = new URL("./benchmarks/LoCoMo/locomo10.json", import.meta.url).pathname;
+	const file = Bun.file(dataPath);
+	const data = await file.json();
+	return data as LoCoMoBenchmarkItem[];
+}
+
 // Benchmark data registry
 const BENCHMARK_DATA: Record<
 	BenchmarkType,
-	BenchmarkRegistry[BenchmarkType][]
+	BenchmarkRegistry[BenchmarkType][] | Promise<BenchmarkRegistry[BenchmarkType][]>
 > = {
-	RAG: ragBenchmarkData,
+	"RAG-template-benchmark": ragBenchmarkData,
+	"LoCoMo": loadLoCoMoData(), // Load dynamically from JSON
 };
 
 interface CLIArgs {
@@ -168,13 +178,18 @@ Examples:
 		// Run each benchmark with each provider
 		for (const benchmarkName of args.benchmarks) {
 			const benchmarkType = benchmarkName as BenchmarkType;
-			const benchmarkData = BENCHMARK_DATA[benchmarkType];
+			let benchmarkData = BENCHMARK_DATA[benchmarkType];
+			
+			// Resolve promise if it's a promise (for LoCoMo)
+			if (benchmarkData instanceof Promise) {
+				benchmarkData = await benchmarkData;
+			}
 
 			for (const providerName of args.providers) {
 				const provider = PROVIDERS[providerName]!;
 				await runBenchmark(
 					benchmarkType,
-					benchmarkData,
+					benchmarkData as BenchmarkRegistry[BenchmarkType][],
 					providerName,
 					provider,
 				);
