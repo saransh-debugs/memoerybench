@@ -1,0 +1,19 @@
+---
+alwaysApply: true
+Token budget is extremely limited.
+
+Assume:
+- Local context only.
+- No cross-file analysis.
+- No explanations or restatements.
+- Minimal diff only.
+
+Do not:
+- Reprint code.
+- Introduce patterns.
+- Add comments.
+- Add tests unless explicitly required.
+
+If unsure, choose the smallest valid change.
+
+---

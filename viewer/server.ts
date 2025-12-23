@@ -56,10 +56,12 @@ export async function startViewer(options: ViewerOptions): Promise<void> {
 				async GET() {
 					try {
 						const files = await listResultFiles();
-						console.log(`[API] Found ${files.length} result files`);
+						// Filter out comparison files - they have a different schema
+						const runFiles = files.filter(f => !f.endsWith('-comparison.json'));
+						console.log(`[API] Found ${files.length} result files, ${runFiles.length} are run results`);
 						const results: ResultFile[] = [];
 
-						for (const filePath of files.slice(0, 50)) {
+						for (const filePath of runFiles.slice(0, 50)) {
 							try {
 								const result = await readResults(filePath);
 								results.push({
@@ -91,9 +93,11 @@ export async function startViewer(options: ViewerOptions): Promise<void> {
 					try {
 						const runId = req.params.runId;
 						const files = await listResultFiles();
+						// Filter out comparison files
+						const runFiles = files.filter(f => !f.endsWith('-comparison.json'));
 
 						// Find file matching runId
-						const matchingFile = files.find((f) => f.includes(runId));
+						const matchingFile = runFiles.find((f) => f.includes(runId));
 						if (!matchingFile) {
 							return Response.json({ error: "Result not found" }, { status: 404 });
 						}

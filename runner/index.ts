@@ -1212,11 +1212,9 @@ async function runLongMemEvalOrchestrator(
 		`--runId=${runId}`,
 	];
 	
-	// Add question type filter if specified via environment variable
-	const questionType = process.env.LONGMEMEVAL_QUESTION_TYPE;
-	if (questionType) {
-		orchestratorArgs.push(`--questionType=${questionType}`);
-	}
+	// Add question type filter (default to "all" to skip interactive prompt)
+	const questionType = process.env.LONGMEMEVAL_QUESTION_TYPE || "all";
+	orchestratorArgs.push(`--questionType=${questionType}`);
 	
 	// Add position range if specified via environment variables
 	const startPos = process.env.LONGMEMEVAL_START_POSITION;
@@ -1251,7 +1249,7 @@ async function runLongMemEvalOrchestrator(
 	);
 	
 	try {
-		const proc = Bun.spawn(orchestratorArgs.slice(1), {
+		const proc = Bun.spawn(orchestratorArgs, {
 			cwd: longMemEvalDir,
 			stdout: "inherit",
 			stderr: "inherit",

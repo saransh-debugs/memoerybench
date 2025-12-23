@@ -161,6 +161,7 @@ export function sampleTestCases(
 	if (typeof options === "number") {
 		// Legacy: sampleTestCases(testCases, count, seed)
 		count = options;
+		// eslint-disable-next-line prefer-rest-params
 		seed = arguments[2] as number | undefined;
 	} else if (options) {
 		// New: sampleTestCases(testCases, { count, seed, weighted })

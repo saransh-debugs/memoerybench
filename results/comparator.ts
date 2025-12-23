@@ -6,11 +6,6 @@
 
 import type { RunResult, ComparisonResult, Metrics, StatisticalTest } from "./schema";
 import { proportionZTest, twoSampleTTest } from "../runner/statistics";
-
-// =============================================================================
-// Types
-// =============================================================================
-
 export interface CompareOptions {
 	/** Threshold for regression detection (default: 0.05 = 5%) */
 	regressionThreshold?: number;

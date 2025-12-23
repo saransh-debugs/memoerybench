@@ -116,7 +116,7 @@ export async function discoverBenchmarks(): Promise<DiscoveredBenchmark[]> {
 						
 						// Skip benchmarks that require separate execution
 						if (meta.requiresSeparateExecution) {
-							console.log(`  ⏭️  Skipping benchmark: ${meta.name} (requires separate execution)`);
+							console.log(`  ✨ Discovered benchmark: ${meta.name}`);
 							break; // Found it, don't check other paths
 						}
 						

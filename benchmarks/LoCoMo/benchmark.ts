@@ -194,27 +194,9 @@ function evaluateResult(testCase: TestCase, results: SearchResult[]): Evaluation
 }
 
 /**
- * LoCoMo benchmark configuration
- */
-interface LoCoMoConfig {
-	/** Number of samples/seeds to load (default: 1) */
-	maxSamples?: number;
-	/** Maximum number of questions to evaluate (default: 200) */
-	maxQuestions?: number;
-}
-
-// Default configuration - limits for faster iteration
-const DEFAULT_CONFIG: Required<LoCoMoConfig> = {
-	maxSamples: 1,
-	maxQuestions: 10,
-};
-
-/**
  * Create the LoCoMo benchmark
  */
-export function createLoCoMoBenchmark(config?: LoCoMoConfig): Benchmark {
-	const { maxSamples, maxQuestions } = { ...DEFAULT_CONFIG, ...config };
-
+export function createLoCoMoBenchmark(): Benchmark {
 	return {
 		name: "locomo",
 
@@ -222,24 +204,13 @@ export function createLoCoMoBenchmark(config?: LoCoMoConfig): Benchmark {
 			const data = await loadLoCoMoData();
 			const allTestCases: TestCase[] = [];
 
-			// Limit number of samples
-			const samplesToUse = data.slice(0, maxSamples);
-
-			for (const item of samplesToUse) {
+			for (const item of data) {
 				const testCases = qaToTestCases(item);
 				allTestCases.push(...testCases);
-
-				// Early exit if we've hit max questions
-				if (allTestCases.length >= maxQuestions) {
-					break;
-				}
 			}
 
-			// Cap total questions
-			const cappedTestCases = allTestCases.slice(0, maxQuestions);
-
-			console.log(`  LoCoMo: Loaded ${samplesToUse.length}/${data.length} samples, ${cappedTestCases.length} questions (max: ${maxQuestions})`);
-			return cappedTestCases;
+			console.log(`  LoCoMo: Loaded ${data.length} samples, ${allTestCases.length} questions`);
+			return allTestCases;
 		},
 
 		evaluate: evaluateResult,
