@@ -1,16 +1,10 @@
-import type { LoCoMoBenchmarkItem } from "./LoCoMo/types";
-import type { RAGBenchmarkItem } from "./RAG-template-benchmark/types";
+// Export types (new simplified interface)
+export * from "./types";
 
-export interface BenchmarkRegistry {
-  "RAG-template-benchmark": RAGBenchmarkItem;
-    "LoCoMo": LoCoMoBenchmarkItem;
-  // Future benchmarks can be added here
-  // 'QA': QABenchmarkItem;
-  // 'Summarization': SummarizationBenchmarkItem;
-}
+// Export legacy benchmark-specific types
+export * from "./LoCoMo/types";
+export * from "./RAG-template-benchmark/types";
+export * from "./NoLiMa/types";
 
-export type BenchmarkType = keyof BenchmarkRegistry;
-export type BenchmarkData<T extends BenchmarkType> = BenchmarkRegistry[T];
-
-// Export all benchmark types and data
-export * from "./RAG-template-benchmark";
+// Export benchmark data
+export * from "./RAG-template-benchmark/data";

@@ -430,12 +430,17 @@ async function evaluateAll() {
             // Calculate stats by question type
             const byQuestionType: Record<string, { correct: number; total: number }> = {};
             for (const ev of evaluations) {
-                if (!byQuestionType[ev.questionType]) {
-                    byQuestionType[ev.questionType] = { correct: 0, total: 0 };
+                const questionType = ev.questionType;
+                if (!questionType) continue;
+                if (!byQuestionType[questionType]) {
+                    byQuestionType[questionType] = { correct: 0, total: 0 };
                 }
-                byQuestionType[ev.questionType].total++;
-                if (ev.label === 1) {
-                    byQuestionType[ev.questionType].correct++;
+                const stats = byQuestionType[questionType];
+                if (stats) {
+                    stats.total++;
+                    if (ev.label === 1) {
+                        stats.correct++;
+                    }
                 }
             }
             
@@ -485,12 +490,17 @@ async function evaluateAll() {
     // Calculate final stats by question type
     const byQuestionType: Record<string, { correct: number; total: number }> = {};
     for (const ev of evaluations) {
-        if (!byQuestionType[ev.questionType]) {
-            byQuestionType[ev.questionType] = { correct: 0, total: 0 };
+        const questionType = ev.questionType;
+        if (!questionType) continue;
+        if (!byQuestionType[questionType]) {
+            byQuestionType[questionType] = { correct: 0, total: 0 };
         }
-        byQuestionType[ev.questionType].total++;
-        if (ev.label === 1) {
-            byQuestionType[ev.questionType].correct++;
+        const stats = byQuestionType[questionType];
+        if (stats) {
+            stats.total++;
+            if (ev.label === 1) {
+                stats.correct++;
+            }
         }
     }
     
