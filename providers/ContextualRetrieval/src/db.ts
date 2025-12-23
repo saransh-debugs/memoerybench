@@ -4,8 +4,9 @@ import type { Chunk, ChunkWithEmbedding, Document } from "./types.ts";
 // Initialize database by creating tables
 export async function initDatabase() {
 	try {
-		// Read and execute schema
-		const schemaFile = Bun.file("./schema.sql");
+		// Read and execute schema (resolve path relative to this file)
+		const schemaPath = new URL("../schema.sql", import.meta.url).pathname;
+		const schemaFile = Bun.file(schemaPath);
 		const schema = await schemaFile.text();
 
 		// Split by statements and execute each one

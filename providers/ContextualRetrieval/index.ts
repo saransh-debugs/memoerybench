@@ -1,14 +1,25 @@
 import type { BenchmarkRegistry, BenchmarkType } from "../../benchmarks";
 import type { PreparedData, TemplateType } from "../_template";
+import type { ProviderMeta } from "../../runner/types";
+import { adaptLegacyProvider } from "../types";
 import { processDocument } from "./src/add";
 import { initDatabase } from "./src/db";
 import { retrieve } from "./src/retrieve";
 
-await initDatabase();
+// Lazy initialization - only init when first used
+let initialized = false;
+async function ensureInitialized() {
+	if (!initialized) {
+		await initDatabase();
+		initialized = true;
+	}
+}
 
-export default {
+// Legacy provider implementation (default export for backwards compatibility)
+const contextualRetrievalLegacyProvider = {
 	name: "ContextualRetrieval",
 	addContext: async (data: PreparedData) => {
+		await ensureInitialized();
 		console.log(`Processing ContextualRetrieval context: ${data.context}`);
 		console.log(`Metadata:`, data.metadata);
 
@@ -17,6 +28,7 @@ export default {
 	},
 
 	searchQuery: async (query: string) => {
+		await ensureInitialized();
 		console.log(`Searching with ContextualRetrieval: ${query}`);
 		const results = await retrieve(query);
 
@@ -73,3 +85,23 @@ export default {
 		}
 	},
 } satisfies TemplateType;
+
+// Default export for backwards compatibility
+export default contextualRetrievalLegacyProvider;
+
+/**
+ * Provider metadata for auto-discovery
+ */
+export const meta: ProviderMeta = {
+	name: "contextualretrieval",
+	description: "Contextual Retrieval provider - requires PostgreSQL + pgvector",
+	requiresEnv: ["DATABASE_URL", "GOOGLE_GENERATIVE_AI_API_KEY"],
+};
+
+/**
+ * Create a ContextualRetrieval provider instance
+ * Wraps the legacy provider with the adapter to work with the unified interface
+ */
+export function createContextualRetrievalProvider() {
+	return adaptLegacyProvider(contextualRetrievalLegacyProvider);
+}

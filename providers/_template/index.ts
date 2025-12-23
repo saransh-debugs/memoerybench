@@ -1,4 +1,8 @@
 import type { BenchmarkRegistry, BenchmarkType } from "../../benchmarks";
+import type { PreparedData, BenchmarkProcessor, BenchmarkProcessors } from "../types";
+
+// Re-export types for backwards compatibility with existing providers
+export type { PreparedData, BenchmarkProcessor, BenchmarkProcessors } from "../types";
 
 const mockSearchFunction = async (_query: string) => {
 	return [
@@ -8,19 +12,6 @@ const mockSearchFunction = async (_query: string) => {
 			score: 0,
 		},
 	];
-};
-
-export interface PreparedData {
-	context: string;
-	metadata: Record<string, unknown>;
-}
-
-export type BenchmarkProcessor<T extends BenchmarkType> = (
-	data: BenchmarkRegistry[T][],
-) => PreparedData[];
-
-export type BenchmarkProcessors = {
-	[K in BenchmarkType]?: BenchmarkProcessor<K>;
 };
 
 const templateType = {
@@ -40,9 +31,9 @@ const templateType = {
 		data: BenchmarkRegistry[T][],
 	): PreparedData[] => {
 		const processors: BenchmarkProcessors = {
-			RAG: (ragData: BenchmarkRegistry["RAG"][]) => {
+			"RAG-template-benchmark": (ragData: BenchmarkRegistry["RAG-template-benchmark"][]) => {
 				return ragData.map((item) => ({
-					context: `Question: ${item.question}\n\nDocuments:\n${item.documents.map((d) => `- ${d.title}: ${d.content}`).join("\n")}`,
+					context: `Question: ${item.question}\n\nDocuments:\n${item.documents.map((d: { title?: string; content: string }) => `- ${d.title}: ${d.content}`).join("\n")}`,
 					metadata: {
 						id: item.id,
 						expectedAnswer: item.expected_answer,

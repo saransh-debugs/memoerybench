@@ -1,4 +1,4 @@
-import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { insertChunk, insertDocument } from "./db";
@@ -34,7 +34,7 @@ const processChunk = async (chunk: string, document: Document) => {
 	);
 
 	const { object } = await generateObject({
-		model: anthropic("claude-3-5-haiku"),
+		model: google("gemini-flash-latest"),
 		prompt: enhancedChunkPrompt,
 		schema: z.object({
 			enhancedChunk: z.string(),

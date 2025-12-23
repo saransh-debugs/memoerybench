@@ -1,4 +1,4 @@
-# Anthropic Contextual Retrieval Provider
+# Google Gemini Contextual Retrieval Provider
 
 This directory contains the RAG (Retrieval-Augmented Generation) provider implementation with PostgreSQL and pgvector for vector similarity search.
 
