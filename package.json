@@ -1,10 +1,25 @@
 {
   "name": "memorybench",
+  "version": "0.1.0",
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "bin": {
+    "memorybench": "./bin/memorybench.ts"
+  },
+  "scripts": {
+    "memorybench": "bun run bin/memorybench.ts",
+    "view": "bun run bin/memorybench.ts view",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "dev": "bun run bin/memorybench.ts view",
+    "lint": "eslint . --ext .ts,.tsx || true"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -13,8 +28,16 @@
     "@ai-sdk/anthropic": "^2.0.17",
     "@ai-sdk/google": "^2.0.14",
     "@ai-sdk/google-vertex": "^3.0.74",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "ai": "^5.0.44",
     "dedent": "^1.7.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "simple-statistics": "^7.8.8",
     "zod": "^4.1.9"
+  },
+  "optionalDependencies": {
+    "supermemory": "^3.14.0"
   }
 }
